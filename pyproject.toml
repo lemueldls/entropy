@@ -1,13 +1,13 @@
 [project]
-name = "manimations"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.14"
 dependencies = [
-    "manim>=0.20.1",
     "manim-slides[pyside6-full]>=5.6.0",
+    "manim>=0.20.1",
     "manimlib>=0.2.0",
     "matplotlib>=3.10.9",
     "numpy>=2.4.4",
 ]
+description = "Math 308 Project"
+name = "entropy"
+readme = "README.md"
+requires-python = ">=3.14"
+version = "0.1.0"

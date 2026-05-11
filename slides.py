@@ -14,7 +14,7 @@ class Title(Slide):
         self.play(FadeIn(subtitle), run_time=1)
         self.next_slide()
 
-        # self.play(FadeOut(title), FadeOut(subtitle))
+        self.play(FadeOut(title), FadeOut(subtitle))
 
 
 class HistoryAndMotivation(Slide):
@@ -116,10 +116,7 @@ class EntropyExample(Slide):
         prob_text.next_to(calculation, DOWN, buff=1)
 
         for i, label in enumerate(["Heads", "Tails"]):
-            bar = Rectangle()
-            bar.set_width(1.5)
-            bar.set_height(1.5)
-            bar.set_color(BLUE)
+            bar = Rectangle(width=1.5, height=1.5, color=BLUE)
             bar.next_to(prob_text, DOWN, buff=0.3).shift(RIGHT * (i - 0.5) * 2)
             label_text = Text(label, font_size=20)
             label_text.next_to(bar, DOWN, buff=0.2)
