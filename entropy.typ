@@ -3,6 +3,13 @@
 
 = Entropy
 
+The concept of entropy is important in many fields of science, including to
+digital technology. Began in thermodynamics, but now extends to "information" which in turn is important to Data Science (Shannon Entropy)
+
+We've seen what a partition is in this class. One entry point into the concept of entropy is the concept of entropy of a partition, aluded to in the video above as a "macrostate".
+
+== Notes
+
 #note[Information is a stream of symbols, and $mu$ is the probability distribution on the information set.]
 
 Set of outcomes: $X = {x_1, ..., x_n}$ (or $NN$).
@@ -55,15 +62,24 @@ $h = lim_(n -> oo) 1/n H_n$ (entropy of source).
   - (a) Let $alpha = {A_1, ..., A_m}$ and $beta = {B_1, ..., B_l}$ be partitions of $X$. Show $alpha or beta = {A inter B mid(|) A in alpha "and" B in beta}$ is also a partition.
 
     #ans[
-      $alpha or beta$ is a partition because:
+      // $alpha or beta$ is a partition because:
       - $A inter B$ is nonempty for some $A in alpha$ and $B in beta$ (since $alpha$ and $beta$ are partitions).
       - The sets $A inter B$ are disjoint (since $alpha$ and $beta$ are partitions).
       - The union of the sets $A inter B$ covers $X$ (since $alpha$ and $beta$ are partitions).
+      - Therefore, $alpha or beta$ is a partition of $X$.
     ]
 
   - (b) (Optional, may be more difficult). Let $T: X -> X$ and assume $mu compose T^(-1) = mu$. Show $T^(-1) alpha = {T^(-1)(A) mid(|) A in alpha}$ is also a partition.
 
-- *Exercise 6.1.4* b, c, d ((a) optional).
+- *Exercise 6.1.4* (b), (c), (d) ((a) optional).
+
+  Let $alpha$ and $beta$ be partitions of ($X$, $cal(F)$, $mu$, $T$), where $T$ is a measure preserving transformation.
+
+  #set enum(numbering: "(a)")
+  + Show that $H(T^(-1) alpha) = H(alpha)$.
+  + Show that if $alpha <= beta$, then $H(alpha) <= H(beta)$.
+  + Show that $H(alpha or beta) <= H(alpha) + H(beta)$.
+  + We call two partitions $alpha$ and $beta$ _independent_ if $ mu(A inter B) = mu(A) mu(B) quad "for all" quad A in alpha, space B in beta $ Show that if $alpha$ and $beta$ are independent partitions, $ H(alpha or beta) = H(alpha) + H(beta) $
 
 (Compared to the video on entropy, the moral of the story is that smaller "macrostates" (i.e., partition elements) have higher entropy).
 
@@ -92,3 +108,21 @@ Are $alpha$ and $beta$ independent?
 You already calculated $H(alpha)$. What are $H(beta)$, $H(alpha | beta)$, $H(beta | alpha)$? Interpret these results.
 
 - *Exercise 6.1.15.* Especially part (e).
+
+  Let $a$, $beta$ and $gamma$ be partitions of $X$.
+
+  #set enum(numbering: "(a)")
+  + Show that $H(alpha or beta | gamma) = H(alpha | gamma) + H(beta | alpha or gamma)$.
+  + Show that, if $beta <= alpha$, then $H(gamma | alpha) <= H(gamma | beta)$.
+  + Show that $H(alpha or beta) = H(alpha) + H(beta | alpha)$.
+  + Show that, if $beta < alpha$, then $H(beta | alpha) = 0$.
+  + Explain in words why each result (a)-(d) is reasonable.
+
+=== Project
+
+#set enum(numbering: "1.")
++ Video presentation, about 20-30 minutes (submit as a group)
++ A problem/exercise for the rest of the class to try to solve (see #5 below). Mention this problem at the end of your presentation without a solution, and submit your solution as a PDF on brightspace. One place to look for such problems is in the resource related to your project. (submitted as a group)
++ Write a summary for some other team's project. Follow the guidelines/prompt questions on brightspace (submit individually, this is not a group assignment).
++ Repeat the step above for another team's project.
++ Submit a solution to one of the two problems (see step 2) corresponding to projects you wrote a summary about (also submit individually, this is not a group assignment)
