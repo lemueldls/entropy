@@ -1,5 +1,7 @@
-from manim import *
-from manim_slides import Slide
+from manim import *  # noqa: F403
+from manim_slides import Slide  # ty:ignore[unresolved-import]
+
+from simulations import huffman_average_length
 
 
 class Title(Slide):
@@ -114,7 +116,10 @@ class EntropyExample(Slide):
         prob_text.next_to(calculation, DOWN, buff=1)
 
         for i, label in enumerate(["Heads", "Tails"]):
-            bar = Rectangle(width=1.5, height=1.5, color=BLUE)
+            bar = Rectangle()
+            bar.set_width(1.5)
+            bar.set_height(1.5)
+            bar.set_color(BLUE)
             bar.next_to(prob_text, DOWN, buff=0.3).shift(RIGHT * (i - 0.5) * 2)
             label_text = Text(label, font_size=20)
             label_text.next_to(bar, DOWN, buff=0.2)
@@ -490,3 +495,121 @@ class Conclusion(Slide):
         self.play(Write(text1), run_time=1.5)
         self.play(FadeIn(text2), run_time=1)
         self.next_slide()
+
+
+class CoinEntropySim(Slide):
+    def construct(self):
+        title = Text("Coin Entropy Simulation", font_size=48, weight=BOLD)
+        title.to_edge(UP)
+        self.play(Write(title))
+        self.next_slide()
+
+        # simulate empirical entropy for a biased coin
+        p = 0.3
+        n = 500
+        step = 5
+        rng = np.random.default_rng(42)
+        samples = (rng.random(n) < p).astype(int)
+        xs = list(range(step, n + 1, step))
+        ys = []
+        for m in xs:
+            counts = np.bincount(samples[:m], minlength=2).astype(float)
+            probs = counts / counts.sum()
+            probs = np.where(probs == 0, 1.0, probs)
+            h = -(probs * np.log2(probs)).sum()
+            ys.append(h)
+
+        # Create axes and plot
+        ax = Axes(x_range=[0, n, n // 5], y_range=[0, 1, 0.1], x_length=10, y_length=4)
+        ax.to_edge(DOWN)
+        x_vals = xs
+        y_vals = ys
+        points = [ax.coords_to_point(x, y) for x, y in zip(x_vals, y_vals)]
+        curve = VMobject()
+        curve.set_points_as_corners([points[0]] + points)
+        curve.set_stroke(color=BLUE, width=3)
+
+        true_p = p
+        if true_p in (0.0, 1.0):
+            h_true = 0.0
+        else:
+            h_true = -(true_p * np.log2(true_p) + (1 - true_p) * np.log2(1 - true_p))
+        h_text = MathTex(rf"H_{{true}} = {h_true:.3f}\ \text{{bits}}", font_size=28)
+        h_text.to_edge(RIGHT).shift(LEFT)
+
+        self.play(FadeIn(ax), Write(h_text))
+        self.next_slide()
+
+        self.play(Create(curve), run_time=4)
+        self.next_slide()
+        self.play(FadeOut(title, ax, curve, h_text))
+
+
+class BSCCapacitySim(Slide):
+    def construct(self):
+        title = Text("BSC Capacity", font_size=48, weight=BOLD)
+        title.to_edge(UP)
+        self.play(Write(title))
+        self.next_slide()
+
+        ps = np.linspace(0.0, 0.5, 101)
+        H = lambda p: (
+            -(
+                np.where(p == 0, 1.0, p) * np.log2(np.where(p == 0, 1.0, p))
+                + (1 - p) * np.log2(np.where(p == 1, 1.0, 1 - p))
+            )
+        )
+        Cs = 1 - H(ps)
+
+        ax = Axes(x_range=[0, 0.5, 0.1], y_range=[0, 1, 0.1], x_length=10, y_length=4)
+        ax.to_edge(DOWN)
+        points = [ax.coords_to_point(p, c) for p, c in zip(ps, Cs)]
+        curve = VMobject()
+        curve.set_points_as_corners([points[0]] + points)
+        curve.set_stroke(color=GREEN, width=3)
+
+        label = MathTex(r"C = 1 - H(p)", font_size=30)
+        label.next_to(ax, UP, buff=0.5)
+
+        self.play(FadeIn(ax), Write(label))
+        self.next_slide()
+        self.play(Create(curve), run_time=4)
+        self.next_slide()
+        self.play(FadeOut(title, ax, curve, label))
+
+
+class HuffmanSim(Slide):
+    def construct(self):
+        title = Text("Huffman Example: Frequencies", font_size=48, weight=BOLD)
+        title.to_edge(UP)
+        self.play(Write(title))
+        self.next_slide()
+
+        freqs = {"A": 0.5, "B": 0.3, "C": 0.2}
+        names = list(freqs.keys())
+        vals = [freqs[n] for n in names]
+
+        bars = VGroup()
+        for i, (n, v) in enumerate(zip(names, vals)):
+            rect = Rectangle()
+            rect.set_width(0.8)
+            rect.set_height(4 * v)
+            rect.set_fill(color=BLUE, opacity=0.8)
+            rect.set_stroke(width=0)
+            rect.move_to(LEFT * (1.2 - i * 1.2) + DOWN * (2 - 2 * v))
+            label = Text(n, font_size=24)
+            label.next_to(rect, DOWN, buff=0.1)
+            bars.add(rect, label)
+
+        avg_len = huffman_average_length(freqs)
+        avg_text = MathTex(
+            rf"\text{{Average length}} \approx {avg_len:.2f}\ \text{{bits}}",
+            font_size=28,
+        )
+        avg_text.to_edge(RIGHT).shift(LEFT)
+
+        self.play(FadeIn(bars), Write(avg_text))
+        self.next_slide()
+        self.play(bars.animate.shift(UP * 0.2), run_time=1)
+        self.next_slide()
+        self.play(FadeOut(title, bars, avg_text))

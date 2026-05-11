@@ -8,4 +8,6 @@ dependencies = [
     "manim>=0.20.1",
     "manim-slides[pyside6-full]>=5.6.0",
     "manimlib>=0.2.0",
+    "matplotlib>=3.10.9",
+    "numpy>=2.4.4",
 ]
